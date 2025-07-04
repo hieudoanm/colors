@@ -1,0 +1,19 @@
+lint:
+	go vet ./...
+
+format:
+	go fmt ./...
+
+build:
+	go vet ./...
+	go fmt ./...
+	go build -o ./bin/clrs ./main.go
+
+install:
+	go vet ./...
+	go fmt ./...
+	go build -o ./bin/clrs ./main.go
+	mkdir -p ~/bin
+	cp ./bin/clrs ~/bin/
+	chmod +x ~/bin/clrs
+	export PATH="$(HOME)/bin:$(PATH)"

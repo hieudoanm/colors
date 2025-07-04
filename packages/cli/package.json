@@ -1,0 +1,26 @@
+{
+  "name": "@colors/cli",
+  "version": "0.0.1",
+  "description": "colors CLI",
+  "keywords": [
+    "colors",
+    "cli"
+  ],
+  "homepage": "https://github.com/hieudoanm/colors#readme",
+  "bugs": {
+    "url": "https://github.com/hieudoanm/colors/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/hieudoanm/colors.git"
+  },
+  "license": "GPL-3.0",
+  "author": "hieudoanm <hieumdoan@gmail.com> (https://hieudoanm.github.io)",
+  "scripts": {
+    "lint": "make lint || true",
+    "build": "make build || true",
+    "format": "make format || true",
+    "download": "make install || true"
+  },
+  "packageManager": "pnpm@10.12.4"
+}

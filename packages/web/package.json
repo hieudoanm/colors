@@ -1,0 +1,52 @@
+{
+	"name": "@colors/web",
+	"version": "0.0.1",
+	"private": true,
+	"description": "colors",
+	"keywords": [
+		"colors"
+	],
+	"homepage": "https://github.com/hieudoanm/colors#readme",
+	"bugs": {
+		"url": "https://github.com/hieudoanm/colors/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/hieudoanm/colors.git"
+	},
+	"license": "GPL-3.0",
+	"author": "hieudoanm <hieumdoan@gmail.com> (https://hieudoanm.github.io/)",
+	"packageManager": "pnpm@10.12.4",
+	"scripts": {
+		"format": "prettier --cache --write .",
+		"lint": "next lint",
+		"predev": "kill-port 3000",
+		"dev": "next dev --turbopack",
+		"prebuild": "rimraf .next",
+		"build": "next build",
+		"prestart": "kill-port 3000",
+		"start": "next start",
+		"prepare": "husky || true"
+	},
+	"dependencies": {
+		"next": "15.3.5",
+		"react": "19.1.0",
+		"react-dom": "19.1.0"
+	},
+	"devDependencies": {
+		"@eslint/eslintrc": "3.3.1",
+		"@tailwindcss/postcss": "4.1.11",
+		"@types/node": "24.0.10",
+		"@types/react": "19.1.8",
+		"@types/react-dom": "19.1.6",
+		"eslint": "9.30.1",
+		"eslint-config-next": "15.3.5",
+		"husky": "9.1.7",
+		"kill-port": "2.0.1",
+		"prettier": "3.6.2",
+		"prettier-plugin-tailwindcss": "0.6.13",
+		"rimraf": "6.0.1",
+		"tailwindcss": "4.1.11",
+		"typescript": "5.8.3"
+	}
+}
