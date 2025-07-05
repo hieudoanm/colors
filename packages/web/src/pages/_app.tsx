@@ -1,3 +1,4 @@
+import { APP_NAME } from '@colors/constants';
 import '@colors/styles/globals.css';
 import type { AppProps } from 'next/app';
 import { Geist, Geist_Mono } from 'next/font/google';
@@ -18,7 +19,7 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
 	return (
 		<>
 			<Head>
-				<title>Colors</title>
+				<title>{APP_NAME}</title>
 			</Head>
 			<div className={`${geistSans.className} ${geistMono.className} bg-neutral-900 text-neutral-100`}>
 				<Component {...pageProps} />
