@@ -25,8 +25,7 @@
 		"prebuild": "rimraf .next",
 		"build": "next build",
 		"prestart": "kill-port 3000",
-		"start": "next start",
-		"prepare": "husky || true"
+		"start": "next start"
 	},
 	"dependencies": {
 		"next": "15.3.5",
@@ -36,6 +35,7 @@
 	"devDependencies": {
 		"@eslint/eslintrc": "3.3.1",
 		"@tailwindcss/postcss": "4.1.11",
+		"@tauri-apps/cli": "2.6.2",
 		"@types/node": "24.0.10",
 		"@types/react": "19.1.8",
 		"@types/react-dom": "19.1.6",

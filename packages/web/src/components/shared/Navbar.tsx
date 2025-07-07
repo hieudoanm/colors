@@ -8,8 +8,8 @@ export const Navbar = () => {
 				<Link href="/">
 					<h1 className="text-xl font-bold">{APP_NAME}</h1>
 				</Link>
-				<nav className="space-x-4 font-medium text-neutral-500">
-					{[].map(({ id, href, label }) => {
+				<nav className="space-x-4 font-medium text-neutral-500 hover:text-neutral-100">
+					{[{ id: 'app', href: '/app', label: 'App' }].map(({ id, href, label }) => {
 						return (
 							<Link key={id} href={href} className="text-sm md:text-base">
 								{label}
