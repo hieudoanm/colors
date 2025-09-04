@@ -2,7 +2,7 @@
   "name": "@garmin/watch",
   "version": "0.0.1",
   "description": "Garmin Watchfaces",
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.15.1",
   "keywords": [
     "garmin",
     "watch"
