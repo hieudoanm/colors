@@ -49,7 +49,7 @@ export const HomePage: NextPage = () => {
 
   return (
     <div
-      className="flex h-full items-center justify-center p-4 md:p-8"
+      className="flex h-screen w-screen items-center justify-center p-4 md:p-8"
       style={{
         backgroundColor: hex,
         color: getBrightness(hex) ? '#ffffff' : '#101828',
