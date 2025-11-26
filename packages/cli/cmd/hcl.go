@@ -48,16 +48,16 @@ Example:
 		hex, err := rgb.ToHex()
 		if err != nil {
 			fmt.Println("Error (HEX)  :", err)
-			return
+		} else {
+			fmt.Printf("HEX    : %s\n", hex)
 		}
-		fmt.Printf("HEX    : %s\n", hex)
 
 		// RGB → RGB
 		if !rgb.IsValid() {
 			fmt.Println("Error (RGB)  : invalid RGB values")
-			return
+		} else {
+			fmt.Printf("RGB    : rgb(%d, %d, %d)\n", r, g, b)
 		}
-		fmt.Printf("RGB    : rgb(%d, %d, %d)\n", r, g, b)
 
 		// RGB → HSL
 		hHSL, sHSL, lHSL, err := rgb.ToHSL()
