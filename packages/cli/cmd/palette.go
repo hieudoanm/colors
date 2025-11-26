@@ -38,10 +38,12 @@ var paletteCmd = &cobra.Command{
 			return
 		}
 
+		hex := colors.Hex(hexInput) // wrap input in Hex type
+
 		// HEX → HSL
-		h, s, l, err := colors.HexToHSL(hexInput)
+		h, s, l, err := hex.ToHSL()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("Error converting to HSL:", err)
 			return
 		}
 		baseHue := h
@@ -58,7 +60,6 @@ var paletteCmd = &cobra.Command{
 		}
 
 		var selected string
-
 		prompt := &survey.Select{
 			Message: "Choose palette style:",
 			Options: paletteOptions,

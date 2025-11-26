@@ -9,40 +9,37 @@ import (
 	"strings"
 )
 
-// HexToRgb converts a hex color string to RGB values
-func HexToRgb(hex string) (int, int, int, error) {
-	hex = strings.TrimPrefix(hex, "#")
+type Hex string
+
+// ToRGB converts the hex color to RGB
+func (h Hex) ToRGB() (r, g, b int, err error) {
+	hex := strings.TrimPrefix(string(h), "#")
 	if len(hex) == 3 {
 		hex = fmt.Sprintf("%c%c%c%c%c%c", hex[0], hex[0], hex[1], hex[1], hex[2], hex[2])
 	}
-
-	r, err := strconv.ParseInt(hex[0:2], 16, 0)
-	if err != nil {
-		return 0, 0, 0, err
-	}
-	g, err := strconv.ParseInt(hex[2:4], 16, 0)
-	if err != nil {
-		return 0, 0, 0, err
-	}
-	b, err := strconv.ParseInt(hex[4:6], 16, 0)
-	if err != nil {
-		return 0, 0, 0, err
+	if len(hex) != 6 {
+		return 0, 0, 0, fmt.Errorf("invalid hex length")
 	}
 
-	return int(r), int(g), int(b), nil
+	r64, err := strconv.ParseInt(hex[0:2], 16, 0)
+	if err != nil {
+		return 0, 0, 0, err
+	}
+	g64, err := strconv.ParseInt(hex[2:4], 16, 0)
+	if err != nil {
+		return 0, 0, 0, err
+	}
+	b64, err := strconv.ParseInt(hex[4:6], 16, 0)
+	if err != nil {
+		return 0, 0, 0, err
+	}
+
+	return int(r64), int(g64), int(b64), nil
 }
 
-// GenerateRandomHexColor generates a random hex color string using math/rand/v2.
-func GenerateRandomHexColor() string {
-	r := rand.Uint32N(256)
-	g := rand.Uint32N(256)
-	b := rand.Uint32N(256)
-	return fmt.Sprintf("#%02X%02X%02X", r, g, b)
-}
-
-// HexToHSL converts a hex color string to HSL
-func HexToHSL(hex string) (h, s, l float64, err error) {
-	rInt, gInt, bInt, err := HexToRgb(hex)
+// ToHSL converts a Hex color to HSL values
+func (h Hex) ToHSL() (H, S, L float64, err error) {
+	rInt, gInt, bInt, err := h.ToRGB()
 	if err != nil {
 		return 0, 0, 0, err
 	}
@@ -53,43 +50,45 @@ func HexToHSL(hex string) (h, s, l float64, err error) {
 
 	max := math.Max(r, math.Max(g, b))
 	min := math.Min(r, math.Min(g, b))
-	l = (max + min) / 2
+	L = (max + min) / 2
 
 	if max == min {
-		h, s = 0, 0
+		H, S = 0, 0
 	} else {
 		d := max - min
-		if l > 0.5 {
-			s = d / (2 - max - min)
+		if L > 0.5 {
+			S = d / (2 - max - min)
 		} else {
-			s = d / (max + min)
+			S = d / (max + min)
 		}
 
 		switch max {
 		case r:
-			h = (g - b) / d
+			H = (g - b) / d
 			if g < b {
-				h += 6
+				H += 6
 			}
 		case g:
-			h = (b-r)/d + 2
+			H = (b-r)/d + 2
 		case b:
-			h = (r-g)/d + 4
+			H = (r-g)/d + 4
 		}
-		h *= 60
+		H *= 60
 	}
 
-	return h, s * 100, l * 100, nil
+	S *= 100
+	L *= 100
+	return H, S, L, nil
 }
 
-// HexToOKLCH converts a hex color string to OKLCH
-func HexToOKLCH(hex string) (l, c, h float64, err error) {
-	rInt, gInt, bInt, err := HexToRgb(hex)
+// ToOKLCH converts a Hex color to OKLCH values
+func (h Hex) ToOKLCH() (L, C, H float64, err error) {
+	rInt, gInt, bInt, err := h.ToRGB()
 	if err != nil {
 		return 0, 0, 0, err
 	}
 
-	// Convert sRGB to linear RGB
+	// sRGB → linear RGB
 	toLinear := func(c float64) float64 {
 		c = c / 255
 		if c <= 0.04045 {
@@ -97,42 +96,42 @@ func HexToOKLCH(hex string) (l, c, h float64, err error) {
 		}
 		return math.Pow((c+0.055)/1.055, 2.4)
 	}
+
 	r := toLinear(float64(rInt))
 	g := toLinear(float64(gInt))
 	b := toLinear(float64(bInt))
 
-	// Linear RGB to LMS (Oklab)
+	// Linear RGB → LMS (Oklab)
 	l_ := 0.4122214708*r + 0.5363325363*g + 0.0514459929*b
 	m_ := 0.2119034982*r + 0.6806995451*g + 0.1073969566*b
 	s_ := 0.0883024619*r + 0.2817188376*g + 0.6299787005*b
 
-	cbrt := func(x float64) float64 { return math.Cbrt(x) }
+	cbrt := math.Cbrt
 
-	L := 0.2104542553*cbrt(l_) + 0.7936177850*cbrt(m_) - 0.0040720468*cbrt(s_)
+	L = 0.2104542553*cbrt(l_) + 0.7936177850*cbrt(m_) - 0.0040720468*cbrt(s_)
 	A := 1.9779984951*cbrt(l_) - 2.4285922050*cbrt(m_) + 0.4505937099*cbrt(s_)
 	B := 0.0259040371*cbrt(l_) + 0.7827717662*cbrt(m_) - 0.8086757660*cbrt(s_)
 
-	c = math.Sqrt(A*A + B*B)
-	h = math.Atan2(B, A) * (180 / math.Pi)
-	if h < 0 {
-		h += 360
+	C = math.Sqrt(A*A + B*B)
+	H = math.Atan2(B, A) * (180 / math.Pi)
+	if H < 0 {
+		H += 360
 	}
 
-	return L, c, h, nil
+	return L, C, H, nil
 }
 
-// HexToHCL converts a hex color string to HCL (Hue, Chroma, Lightness)
-func HexToHCL(hex string) (h, c, l float64, err error) {
-	// Convert HEX → RGB
-	r, g, b, err := HexToRgb(hex)
+// ToHCL converts a Hex color to HCL (Hue, Chroma, Lightness)
+func (h Hex) ToHCL() (H, C, L float64, err error) {
+	rInt, gInt, bInt, err := h.ToRGB()
 	if err != nil {
 		return 0, 0, 0, err
 	}
 
 	// Convert RGB to [0,1]
-	R := float64(r) / 255
-	G := float64(g) / 255
-	B := float64(b) / 255
+	R := float64(rInt) / 255
+	G := float64(gInt) / 255
+	B := float64(bInt) / 255
 
 	// sRGB → Linear RGB
 	toLinear := func(u float64) float64 {
@@ -162,18 +161,49 @@ func HexToHCL(hex string) (h, c, l float64, err error) {
 	fY := f(Y / refY)
 	fZ := f(Z / refZ)
 
-	L := 116*fY - 16
+	L = 116*fY - 16
 	a := 500 * (fX - fY)
 	bb := 200 * (fY - fZ)
 
-	c = math.Sqrt(a*a + bb*bb)
-	h = math.Atan2(bb, a) * (180 / math.Pi)
-	if h < 0 {
-		h += 360
+	C = math.Sqrt(a*a + bb*bb)
+	H = math.Atan2(bb, a) * (180 / math.Pi)
+	if H < 0 {
+		H += 360
 	}
-	l = L
 
-	return h, c, l, nil
+	return H, C, L, nil
+}
+
+// ToCMYK converts a Hex color to CMYK (0–1 range)
+func (h Hex) ToCMYK() (C, M, Y, K float64, err error) {
+	r, g, b, err := h.ToRGB()
+	if err != nil {
+		return 0, 0, 0, 0, err
+	}
+
+	// Convert RGB to 0–1 range
+	R := float64(r) / 255
+	G := float64(g) / 255
+	B := float64(b) / 255
+
+	K = 1 - math.Max(R, math.Max(G, B))
+	if K == 1 {
+		C, M, Y = 0, 0, 0
+	} else {
+		C = (1 - R - K) / (1 - K)
+		M = (1 - G - K) / (1 - K)
+		Y = (1 - B - K) / (1 - K)
+	}
+
+	return C, M, Y, K, nil
+}
+
+// GenerateRandomHexColor generates a random hex color string using math/rand/v2.
+func GenerateRandomHexColor() string {
+	r := rand.Uint32N(256)
+	g := rand.Uint32N(256)
+	b := rand.Uint32N(256)
+	return fmt.Sprintf("#%02X%02X%02X", r, g, b)
 }
 
 var hexRegex = regexp.MustCompile(`^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$`)
