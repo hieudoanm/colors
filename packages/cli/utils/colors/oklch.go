@@ -110,7 +110,10 @@ func (c OKLCH) ToHSL() (h, s, l float64, err error) {
 		return 0, 0, 0, err
 	}
 
-	h, s, l = RGB{R: r, G: g, B: b}.ToHSL()
+	h, s, l, err = RGB{R: r, G: g, B: b}.ToHSL()
+	if err != nil {
+		return 0, 0, 0, err
+	}
 	return h, s, l, nil
 }
 
@@ -123,7 +126,10 @@ func (c OKLCH) ToHCL() (h, cVal, l float64, err error) {
 		return 0, 0, 0, err
 	}
 
-	h, cVal, l = RGB{R: r, G: g, B: b}.ToHCL()
+	h, cVal, l, err = RGB{R: r, G: g, B: b}.ToHCL()
+	if err != nil {
+		return 0, 0, 0, err
+	}
 	return h, cVal, l, nil
 }
 
@@ -136,6 +142,9 @@ func (c OKLCH) ToCMYK() (C, M, Y, K float64, err error) {
 		return 0, 0, 0, 0, err
 	}
 
-	C, M, Y, K = RGB{R: r, G: g, B: b}.ToCMYK()
+	C, M, Y, K, err = RGB{R: r, G: g, B: b}.ToCMYK()
+	if err != nil {
+		return 0, 0, 0, 0, err
+	}
 	return C, M, Y, K, nil
 }

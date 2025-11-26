@@ -1,6 +1,7 @@
 package colors
 
 import (
+	"errors"
 	"fmt"
 	"math"
 )
@@ -26,17 +27,21 @@ func (c RGB) IsValid() bool {
 // -------------------------------
 // RGB → HEX
 // -------------------------------
-func (c RGB) ToHex() string {
+func (c RGB) ToHex() (string, error) {
 	if !c.IsValid() {
-		return "#000000"
+		return "", errors.New("invalid RGB value")
 	}
-	return fmt.Sprintf("#%02X%02X%02X", c.R, c.G, c.B)
+	return fmt.Sprintf("#%02X%02X%02X", c.R, c.G, c.B), nil
 }
 
 // -------------------------------
 // RGB → HSL
 // -------------------------------
-func (c RGB) ToHSL() (h, s, l float64) {
+func (c RGB) ToHSL() (h, s, l float64, err error) {
+	if !c.IsValid() {
+		return 0, 0, 0, errors.New("invalid RGB value")
+	}
+
 	r := float64(c.R) / 255
 	g := float64(c.G) / 255
 	b := float64(c.B) / 255
@@ -69,36 +74,41 @@ func (c RGB) ToHSL() (h, s, l float64) {
 		h *= 60
 	}
 
-	return h, s * 100, l * 100
+	return h, s * 100, l * 100, nil
 }
 
 // -------------------------------
 // RGB → CMYK
 // -------------------------------
-func (c RGB) ToCMYK() (float64, float64, float64, float64) {
+func (c RGB) ToCMYK() (float64, float64, float64, float64, error) {
 	if !c.IsValid() {
-		return 0, 0, 0, 1
+		return 0, 0, 0, 0, errors.New("invalid RGB value")
 	}
+
 	r := float64(c.R) / 255
 	g := float64(c.G) / 255
 	b := float64(c.B) / 255
 
 	k := 1 - math.Max(r, math.Max(g, b))
 	if k == 1 {
-		return 0, 0, 0, 1
+		return 0, 0, 0, 1, nil
 	}
 
 	cy := (1 - r - k) / (1 - k)
 	m := (1 - g - k) / (1 - k)
 	y := (1 - b - k) / (1 - k)
 
-	return cy * 100, m * 100, y * 100, k * 100
+	return cy * 100, m * 100, y * 100, k * 100, nil
 }
 
 // -------------------------------
 // RGB → HCL (CIELCh)
 // -------------------------------
-func (c RGB) ToHCL() (h, cVal, l float64) {
+func (c RGB) ToHCL() (h, cVal, l float64, err error) {
+	if !c.IsValid() {
+		return 0, 0, 0, errors.New("invalid RGB value")
+	}
+
 	// RGB → XYZ
 	R := linearize(float64(c.R) / 255)
 	G := linearize(float64(c.G) / 255)
@@ -129,13 +139,17 @@ func (c RGB) ToHCL() (h, cVal, l float64) {
 	}
 	l = L
 
-	return
+	return h, cVal, l, nil
 }
 
 // -------------------------------
 // RGB → OKLCH
 // -------------------------------
-func (c RGB) ToOKLCH() (L, C, H float64) {
+func (c RGB) ToOKLCH() (L, C, H float64, err error) {
+	if !c.IsValid() {
+		return 0, 0, 0, errors.New("invalid RGB value")
+	}
+
 	// RGB → linear RGB
 	toLinear := func(v float64) float64 {
 		v = v / 255
@@ -165,7 +179,7 @@ func (c RGB) ToOKLCH() (L, C, H float64) {
 	}
 	L = L_
 
-	return
+	return L, C, H, nil
 }
 
 // -------------------------------
