@@ -22,7 +22,7 @@
     "build": "turbo run build",
     "prepare": "husky || true"
   },
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@10.25.0",
   "devDependencies": {
     "husky": "9.1.7",
     "turbo": "2.6.3"
