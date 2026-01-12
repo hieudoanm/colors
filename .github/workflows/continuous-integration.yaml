@@ -46,6 +46,8 @@ jobs:
       # Step 6: Run linter for static code analysis
       - name: Linting
         run: pnpm run lint
+      - name: Test
+        run: pnpm run test
 
       # Step 7: Build the project for production
       - name: Build Production
