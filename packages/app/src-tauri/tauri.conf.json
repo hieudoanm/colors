@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "colors",
+  "productName": "@colors/app",
   "version": "0.0.1",
   "identifier": "io.github.hieudoanm.colors",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "colors",
+        "title": "@colors/app",
         "width": 800,
         "height": 600,
         "resizable": true,
